@@ -22,7 +22,7 @@ module.exports = {
 
     if (user.bot) {
       return interaction.reply({
-        content: (`That user is not currently available to match with`),
+        content: `That user is not currently available to match with`,
         ephemeral: true,
       });
     }
@@ -30,28 +30,26 @@ module.exports = {
     let check = await schema.findOne({ AuthorID: interaction.member.id });
     if (check) {
       return interaction.reply({
-        content: (`You already enetered a desired match.`),
+        content: `You already enetered a desired match.`,
         ephemeral: true,
       });
     }
 
     let data = await schema.findOne({ MatchID: interaction.member.id });
     if (data !== null) {
-      data = new schema({
-        AuthorID: interaction.user.id,
-        MatchID: user.id,
-      });
       return (
         interaction.reply({
           content: `You have been matched with <@${data.AuthorID}>`,
           ephemeral: true,
         }) &&
-        interaction.member.send(
-          `You have been matched with <@${data.AuthorID}>`
-        ).catch(() =>
-        interaction
-          .followUp({ content: (`An error occured trying to send you a message of your match, <@${user.id}>.`), ephemeral: true })
-      ) &&
+        interaction.member
+          .send(`You have been matched with <@${data.AuthorID}>`)
+          .catch(() =>
+            interaction.followUp({
+              content: `An error occured trying to send you a message of your match, <@${user.id}>.`,
+              ephemeral: true,
+            })
+          ) &&
         interaction.guild.members.cache
           .get(data.AuthorID)
           .send(`You have been matched with <@${interaction.user.id}>`)
@@ -61,6 +59,12 @@ module.exports = {
               ephemeral: true,
             })
           )
+      ).then(
+        () =>
+          (data = new schema({
+            AuthorID: interaction.user.id,
+            MatchID: user.id,
+          }))
       );
     } else if (data == null) {
       data = new schema({
