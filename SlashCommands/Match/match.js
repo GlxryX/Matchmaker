@@ -29,17 +29,18 @@ module.exports = {
 
     let check = await schema.findOne({ AuthorID: interaction.member.id });
     if (check) {
-      let matchFound = await schema.findOne({ AuthorID: check.MatchID })
+      let matchFound = await schema.findOne({ AuthorID: check.MatchID });
       if (matchFound) {
         return interaction.reply({
           content: `You are already matched with <@${matchFound.AuthorID}>`,
           ephemeral: true,
         });
+      } else {
+        return interaction.reply({
+          content: `You already enetered a desired match.`,
+          ephemeral: true,
+        });
       }
-      return interaction.reply({
-        content: `You already enetered a desired match.`,
-        ephemeral: true,
-      });
     }
 
     let data = await schema.findOne({ MatchID: interaction.member.id });
