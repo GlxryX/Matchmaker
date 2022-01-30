@@ -1,7 +1,7 @@
 const schema = require("../../models/match");
 module.exports = {
   name: "match",
-  description: "WARNING: THIS ACTION IS NOT REVERSIBLE",
+  description: "WARNING: THIS CHOICE IS IRREVERSIBLE",
   options: [
     {
       name: "user",
@@ -15,14 +15,14 @@ module.exports = {
 
     if (interaction.member.id === user.id) {
       return interaction.reply({
-        content: "You can't match with yourself",
+        content: "You can't match with yourself.",
         ephemeral: true,
       });
     }
 
     if (user.bot) {
       return interaction.reply({
-        content: `That user is not currently available to match with`,
+        content: `That user is not currently available to match with.`,
         ephemeral: true,
       });
     }
@@ -32,7 +32,7 @@ module.exports = {
       let matchFound = await schema.findOne({ AuthorID: check.MatchID });
       if (matchFound) {
         return interaction.reply({
-          content: `You are already matched with <@${matchFound.AuthorID}>`,
+          content: `You are already matched with <@${matchFound.AuthorID}>.`,
           ephemeral: true,
         });
       } else {
@@ -45,10 +45,10 @@ module.exports = {
       let data = await schema.findOne({ MatchID: interaction.member.id });
       if (data !== null) {
         interaction.reply({
-          content: `You have been matched with <@${data.AuthorID}>`,
+          content: `You have been matched with <@${data.AuthorID}>.`,
           ephemeral: true,
         }) &&
-        interaction.user.send(`You have been matched with <@${data.AuthorID}>`)
+        interaction.user.send(`You have been matched with <@${data.AuthorID}>.`)
             .catch(() =>
               interaction.followUp({
                 content: `An error occured trying to send you a message of your match, <@${user.id}>.`,
@@ -57,7 +57,7 @@ module.exports = {
             ) &&
           interaction.guild.members.cache
             .get(data.AuthorID)
-            .send(`You have been matched with <@${interaction.user.id}>`)
+            .send(`You have been matched with <@${interaction.user.id}>.`)
             .catch(() =>
               interaction.followUp({
                 content: `An error occured trying to send a message to your match, <@${user.id}>.`,
@@ -78,7 +78,7 @@ module.exports = {
         });
         await data.save();
         return interaction.reply({
-          content: "Your match has successfully been sent",
+          content: "Your match has successfully been sent.",
           ephemeral: true,
         });
       }
