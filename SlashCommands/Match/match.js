@@ -37,6 +37,10 @@ module.exports = {
 
     let data = await schema.findOne({ MatchID: interaction.member.id });
     if (data !== null) {
+      data = new schema({
+        AuthorID: interaction.user.id,
+        MatchID: user.id,
+      });
       return (
         interaction.reply({
           content: `You have been matched with <@${data.AuthorID}>`,
