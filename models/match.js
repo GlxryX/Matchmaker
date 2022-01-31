@@ -5,4 +5,4 @@ const Schema = new mongoose.Schema({
   MatchID: { type: String },
 });
 
-module.exports = mongoose.model('matcher', Schema);
+module.exports = mongoose.model('matchid', Schema);
