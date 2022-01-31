@@ -43,7 +43,7 @@ module.exports = {
       }
     } else {
       let data = await schema.findOne({ MatchID: interaction.member.id });
-      if (data !== null) {
+      if (data !== null && data.AuthorID == user.id) {
         interaction.reply({
           content: `You have been matched with <@${data.AuthorID}>.`,
           ephemeral: true,
