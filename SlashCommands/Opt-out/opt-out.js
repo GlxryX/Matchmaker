@@ -29,13 +29,13 @@ if (matchData !== null) {
         });
 } else if (data !== null) {
         interaction.reply({
-          content: `You have already opted-out of matching.`,
+          content: `You are already opted-out of matching.`,
           ephemeral: true,
         });
       } else if (data == null) {
         interaction
           .reply({
-            content: `You are successfully opted-out of matching.`,
+            content: `You have successfully opted-out of matching.`,
             ephemeral: true,
           })
           .then(() =>
