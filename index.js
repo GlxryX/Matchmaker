@@ -2,12 +2,10 @@ const Discord = require("discord.js");
 const { Client, Collection } = require("discord.js");
 const mongoose = require("mongoose");
 require("dotenv").config();
-// var path = require("path");
 
 const client = new Client({
   intents: [
     Discord.Intents.FLAGS.GUILDS,
-    // Discord.Intents.FLAGS.GUILD_MEMBERS,
     Discord.Intents.FLAGS.GUILD_BANS,
     Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
     Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
@@ -26,14 +24,10 @@ const client = new Client({
 
 const fs = require("fs");
 
-client.commands = new Collection();
-client.aliases = new Collection();
 client.events = new Collection();
 client.slashCommands = new Collection();
 
 module.exports = client;
-
-client.cooldown = new Collection();
 
 ["Event", "Slash"].forEach((handler) => {
   require(`./Structures/${handler}`)(client);
