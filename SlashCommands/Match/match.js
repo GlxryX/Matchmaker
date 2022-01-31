@@ -48,7 +48,8 @@ module.exports = {
           content: `You have been matched with <@${data.AuthorID}>.`,
           ephemeral: true,
         }) &&
-        interaction.user.send(`You have been matched with <@${data.AuthorID}>.`)
+          interaction.user
+            .send(`You have been matched with <@${data.AuthorID}>.`)
             .catch(() =>
               interaction.followUp({
                 content: `An error occured trying to send you a message of your match, <@${user.id}>.`,
@@ -64,14 +65,13 @@ module.exports = {
                 ephemeral: true,
               })
             )
-            .then(
-              () =>
-                (data = new schema({
-                  AuthorID: interaction.user.id,
-                  MatchID: user.id,
-                })).save()
+            .then(() =>
+              (data = new schema({
+                AuthorID: interaction.user.id,
+                MatchID: user.id,
+              })).save()
             );
-      } else if (data == null) {
+      } else {
         data = new schema({
           AuthorID: interaction.user.id,
           MatchID: user.id,
@@ -82,7 +82,6 @@ module.exports = {
           ephemeral: true,
         });
       }
-
     }
   },
 };
