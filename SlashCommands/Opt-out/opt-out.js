@@ -1,4 +1,5 @@
 const schema = require("../../models/opt-out");
+const schema_match = require("../../models/match");
 module.exports = {
   name: "opt-out",
   description:
@@ -20,7 +21,13 @@ module.exports = {
 
     if (toggle == "true") {
       let data = await schema.findOne({ UserID: interaction.member.id });
-      if (data !== null) {
+      let matchData = await schema_match.findOne({ AuthorID: interaction.member.id });
+if (matchData !== null) {
+        interaction.reply({
+          content: `You have already sent a match and can no longer opt-out of matching.`,
+          ephemeral: true,
+        });
+} else if (data !== null) {
         interaction.reply({
           content: `You have already opted-out of matching.`,
           ephemeral: true,
@@ -28,7 +35,7 @@ module.exports = {
       } else if (data == null) {
         interaction
           .reply({
-            content: `You have successfully opted-out of matching.`,
+            content: `You are successfully opted-out of matching.`,
             ephemeral: true,
           })
           .then(() =>
@@ -50,7 +57,7 @@ module.exports = {
           .then(() => data.remove());
       } else if (data == null) {
         interaction.reply({
-          content: `You have already opted-in to matching.`,
+          content: `You are already opted-in to matching.`,
           ephemeral: true,
         });
       }
