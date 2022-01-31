@@ -1,4 +1,5 @@
 const schema = require("../../models/match");
+const schema_opt = require("../../models/opt-out");
 module.exports = {
   name: "match",
   description: "WARNING: THIS CHOICE IS IRREVERSIBLE",
@@ -19,10 +20,18 @@ module.exports = {
         ephemeral: true,
       });
     }
-
-    if (user.bot) {
+    let opt = await schema_opt.findOne({ UserID: user.id });
+    if (opt !== null || user.bot) {
       return interaction.reply({
         content: `That user is not currently available to match with.`,
+        ephemeral: true,
+      });
+    }
+
+    let optUser = await schema_opt.findOne({ UserID: interaction.member.id });
+    if (optUser !== null) {
+      return interaction.reply({
+        content: `You have currently disabled matching. Please enable it before matching using \`/opt-out false\`.`,
         ephemeral: true,
       });
     }
