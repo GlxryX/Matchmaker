@@ -43,7 +43,6 @@ module.exports = {
 
     // Check user's match status
     if (check !== null && data !== null && data.AuthorID == check.MatchID || check !== null && data == null) {
-      if (check.MatchID !== user.id) {
         let matchFound = await schema.findOne({ AuthorID: check.MatchID });
         if (matchFound) {
           return interaction.reply({
@@ -69,8 +68,7 @@ module.exports = {
                 }
               )
             );
-        }
-      } else if (check.MatchID == user.id) {
+        } else if (check.MatchID == user.id) {
         return interaction.reply({
           content: `You have already submitted a match for <@${user.id}>.`,
           ephemeral: true,
