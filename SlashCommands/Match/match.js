@@ -2,7 +2,7 @@ const schema = require("../../models/match");
 const schema_opt = require("../../models/opt-out");
 module.exports = {
   name: "match",
-  description: "WARNING: THIS CHOICE IS IRREVERSIBLE",
+  description: "Speciy the user you want to match with",
   options: [
     {
       name: "user",
@@ -28,6 +28,7 @@ module.exports = {
       });
     }
 
+    // Check if user is opted-in
     let optUser = await schema_opt.findOne({ UserID: interaction.member.id });
     if (optUser !== null) {
       return interaction.reply({
@@ -36,22 +37,46 @@ module.exports = {
       });
     }
 
+    // Database connections
     let check = await schema.findOne({ AuthorID: interaction.member.id });
-    if (check) {
-      let matchFound = await schema.findOne({ AuthorID: check.MatchID });
-      if (matchFound) {
+    let data = await schema.findOne({ MatchID: interaction.member.id });
+
+    // Check user's match status
+    if (check !== null && data !== null && data.AuthorID == check.MatchID || check !== null && data == null) {
+      if (check.MatchID !== user.id) {
+        let matchFound = await schema.findOne({ AuthorID: check.MatchID });
+        if (matchFound) {
+          return interaction.reply({
+            content: `You are already matched with <@${matchFound.AuthorID}>.`,
+            ephemeral: true,
+          });
+        } else if (
+          (data == null && check.MatchID !== user.id) ||
+          (data !== null &&
+            data.AuthorID !== user.id &&
+            check.MatchID !== user.id)
+        ) {
+          return interaction
+            .reply({
+              content: `Your match has successfully been updated from <@${check.MatchID}> to <@${user.id}>.`,
+              ephemeral: true,
+            })
+            .then(() =>
+              schema.updateOne(
+                { AuthorID: interaction.member.id },
+                {
+                  $set: { MatchID: user.id },
+                }
+              )
+            );
+        }
+      } else if (check.MatchID == user.id) {
         return interaction.reply({
-          content: `You are already matched with <@${matchFound.AuthorID}>.`,
-          ephemeral: true,
-        });
-      } else {
-        return interaction.reply({
-          content: `You have already entered a desired match.`,
+          content: `You have already submitted a match for <@${user.id}>.`,
           ephemeral: true,
         });
       }
     } else {
-      let data = await schema.findOne({ MatchID: interaction.member.id });
       if (data !== null && data.AuthorID == user.id) {
         interaction.reply({
           content: `You have been matched with <@${data.AuthorID}>.`,
@@ -74,12 +99,21 @@ module.exports = {
                 ephemeral: true,
               })
             )
-            .then(() =>
-              (data = new schema({
-                AuthorID: interaction.user.id,
-                MatchID: user.id,
-              })).save()
-            );
+            .then(() => {
+              if (check == null) {
+                (data = new schema({
+                  AuthorID: interaction.user.id,
+                  MatchID: user.id,
+                })).save();
+              } else {
+                schema.updateOne(
+                  { AuthorID: interaction.member.id },
+                  {
+                    $set: { MatchID: user.id },
+                  }
+                );
+              }
+            });
       } else {
         data = new schema({
           AuthorID: interaction.user.id,
