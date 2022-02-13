@@ -14,7 +14,7 @@ module.exports = {
           ephemeral: true,
         });
       } else {
-        await schema.findOneAndDelete()({ AuthorID: interaction.member.id }).then(() => {
+        await schema.findOneAndDelete({ AuthorID: interaction.member.id }).then(() => {
           interaction.reply({
             content: `Your match has successfully been removed.`,
             ephemeral: true,
