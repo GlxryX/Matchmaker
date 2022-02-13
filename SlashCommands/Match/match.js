@@ -2,7 +2,7 @@ const schema = require("../../models/match");
 const schema_opt = require("../../models/opt-out");
 module.exports = {
   name: "match",
-  description: "Speciy the user you want to match with",
+  description: "Specify the user you want to match with",
   options: [
     {
       name: "user",
